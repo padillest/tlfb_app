@@ -1,0 +1,98 @@
+<!DOCTYPE html> 
+
+<html lang = "en">
+    <head> 
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
+        <title> 90-Day Timeline Followback </title>
+
+        <link rel = "stylesheet" href = "style.css">
+    </head>
+
+    <body>
+
+        <div id = "container">
+            <div id = "header">
+                <div id = "monthDisplay"></div>
+
+                <div> 
+
+                    <button id = "backButton">Back</button>
+                    <button id = "nextButton">Next</button>
+                    <button id = "downLoadButton">Download</button>
+
+                </div> 
+            </div>
+
+            <div id = "weekdays">
+
+                <div>Sunday</div>
+                <div>Monday</div>
+                <div>Tuesday</div>
+                <div>Wednesday</div>
+                <div>Thursday</div>
+                <div>Friday</div>
+                <div>Saturday</div>
+
+            </div>
+
+            <div id = "calendar"></div>
+
+        </div> 
+
+        <div id = "newEventModal">
+
+            <h2>New Event</h2>
+
+            <input id = "alcInput" placeholder = "Alcohol Use" type = "number"/>
+
+            <input id = "cnbInput" placeholder = "Cannabis Use" type = "number"/>
+
+            <input id = "cigInput" placeholder = "Cigarette Use" type = "number"/>
+
+            <div id = "checkBoxList">
+                
+                <input id = "csInput" type = "checkbox" value = 1/> 
+                <label id = "csLabel" for = "csInput">Combined Session</label><br>
+
+                <input id = "thcVInput" type = "checkbox" value = 1/>
+                <label id = "thcVLabel" for = "thcVInput">THC Vape</label><br>
+
+                <input id = "nicVInput" type = "checkbox" value = 1/>
+                <label id = "nicVLabel" for = "nicVInput">Nicotine Vape</label><br>
+
+            </div>
+
+            <div id = "modalButtons">
+
+                <button id = "saveButton">Save</button>
+                <button id = "cancelButton">Cancel</button>
+
+            </div>
+
+        </div> 
+
+        <div id = "deleteEventModal">
+
+            <h2>Event</h2>
+
+            <p id = "alcText"></p>
+            <p id = "cnbText"></p>
+            <p id = "cigText"></p>
+
+            <p id = "csText"></p>
+            <p id = "thcVText"></p>
+            <p id = "nicVText"></p>
+
+            <button id = "deleteButton">Delete</button>
+            <button id = "closeButton">Close</button>
+
+        </div>
+
+        <div id = "modalBackDrop"></div>
+
+        <script src = "script.js"></script>
+
+    </body>
+
+</html>
