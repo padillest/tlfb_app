@@ -18,6 +18,12 @@ let csEvent = localStorage.getItem("csEvent") ? JSON.parse(localStorage.getItem(
 let thcVEvent = localStorage.getItem("thcVEvent") ? JSON.parse(localStorage.getItem("thcVEvent")) : [];
 let nicVEvent = localStorage.getItem("nicVEvent") ? JSON.parse(localStorage.getItem("nicVEvent")) : [];
 
+let dayNoteEvent = localStorage.getItem("dayNoteEvent") ? JSON.parse(localStorage.getItem("dayNoteEvent")) : [];
+
+
+
+
+
 /* initialize lists for inputs */ 
 let alcSum = [];
 let cnbSum = [];
@@ -43,6 +49,12 @@ const cigInput = document.getElementById("cigInput");
 const csInput = document.getElementById("csInput");
 const thcVInput = document.getElementById("thcVInput");
 const nicVInput = document.getElementById("nicVInput");
+
+const dayNoteInput = document.getElementById("dayNoteInput");
+
+
+
+
 
 /* initialize weekdays */ 
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -160,8 +172,10 @@ function openModal(date) {
     const thcVEventForDay = thcVEvent.find(e => e.date === clicked);
     const nicVEventForDay = nicVEvent.find(e => e.date === clicked);
 
+    const dayNoteEventForDay = dayNoteEvent.find(e => e.date === clicked);
+
     // check if data has already been entered on a selected date 
-    if (alcEventForDay || cnbEventForDay || cigEventForDay || csEventForDay || thcVEventForDay || nicVEventForDay) { 
+    if (alcEventForDay || cnbEventForDay || cigEventForDay || csEventForDay || thcVEventForDay || nicVEventForDay || dayNoteEventForDay) { 
 
         if (alcEventForDay) { 
             document.getElementById("alcText").innerText = alcEventForDay.val;
@@ -185,6 +199,10 @@ function openModal(date) {
 
         if (nicVEventForDay) { 
             document.getElementById("nicVText").innerText = nicVEventForDay.val;
+        }
+
+        if (dayNoteEventForDay) { 
+            document.getElementById("dayNoteText").innerText = "Notes: " + dayNoteEventForDay.val;
         }
 
         deleteEventModal.style.display = "block";
@@ -213,6 +231,9 @@ function load() {
     thcVSum = [];
     nicVSum = [];
 
+
+    dayNote = [];
+
     // pushing all input data to their respective list
     for (let a = 0; a < alcEvent.length; a++) { 
         alcSum.push(alcEvent[a].val);
@@ -236,6 +257,10 @@ function load() {
 
     for (let f = 0; f < nicVEvent.length; f++) { 
         nicVSum.push(nicVEvent[f].val);
+    }
+
+    for (let g = 0; g < dayNote.length; g++) { 
+        dayNote.push(dayNote[g].val);
     }
 
     // initialize the current data 
@@ -321,6 +346,10 @@ function load() {
             const csEventForDay = csEvent.find(e => e.date === dayString);
             const thcVEventForDay = thcVEvent.find(e => e.date === dayString);
             const nicVEventForDay = nicVEvent.find(e => e.date === dayString);
+
+
+
+            const dayNoteEventForDay = dayNoteEvent.find(e => e.date === dayString);
     
             // initialize the timeline followback start date
             const startDay = day - 1;
@@ -451,7 +480,7 @@ function closeModal() {
 
 function saveEvent() {
 
-    if (alcInput.value || cnbInput.value || cigInput.value || csInput.checked || thcVInput.checked || nicVInput.checked) { 
+    if (alcInput.value || cnbInput.value || cigInput.value || csInput.checked || thcVInput.checked || nicVInput.checked || dayNoteInput.value) { 
 
         if (alcInput.value) { 
 
@@ -519,6 +548,17 @@ function saveEvent() {
 
         }
 
+        if (dayNoteInput.value) {
+
+            dayNoteEvent.push({
+                date: clicked,
+                val: dayNoteInput.value
+            })
+
+            localStorage.setItem("dayNoteEvent", JSON.stringify(dayNoteEvent));
+
+        }
+
     }
 
     closeModal();
@@ -548,6 +588,10 @@ function deleteEvent() {
 
     nicVEvent = nicVEvent.filter(e => e.date !== clicked);
     localStorage.setItem("nicVEvent", JSON.stringify(nicVEvent));
+
+
+    dayNoteEvent = dayNoteEvent.filter(e => e.date !== clicked);
+    localStorage.setItem("dayNoteEvent", JSON.stringify(dayNoteEvent));
 
     closeModal();
 

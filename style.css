@@ -267,6 +267,13 @@ button {
 
 }
 
+#notes { 
+
+    text-align: center;
+    margin-bottom: 20px;
+
+}
+
 #modalButtons {
 
     text-align: center;
@@ -319,6 +326,11 @@ button {
 
     font-size: 14px;
 
+}
+
+#dayNoteText { 
+
+    font-size: 14px;
 }
 
 #modalBackDrop { 
