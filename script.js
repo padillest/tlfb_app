@@ -4,18 +4,19 @@ let clicked = null;
 
 /* initialize the total sum variables */
 let totalAlcSum = 0;
-let totalCnbSum = 0; 
+let totalMrjSum = 0; 
 let totalCigSum = 0; 
 let totalCsSum = 0;
-let totalThcVSum = 0; 
+let totalNonMrjVSum = 0; 
 let totalNicVSum = 0; 
+let bingeCount = 0;
 
 /* initialize storage for inputs */ 
 let alcEvent = localStorage.getItem("alcEvent") ? JSON.parse(localStorage.getItem("alcEvent")) : [];
-let cnbEvent = localStorage.getItem("cnbEvent") ? JSON.parse(localStorage.getItem("cnbEvent")) : [];
+let mrjEvent = localStorage.getItem("mrjEvent") ? JSON.parse(localStorage.getItem("mrjEvent")) : [];
 let cigEvent = localStorage.getItem("cigEvent") ? JSON.parse(localStorage.getItem("cigEvent")) : [];
 let csEvent = localStorage.getItem("csEvent") ? JSON.parse(localStorage.getItem("csEvent")) : [];
-let thcVEvent = localStorage.getItem("thcVEvent") ? JSON.parse(localStorage.getItem("thcVEvent")) : [];
+let nonMrjVEvent = localStorage.getItem("nonMrjVEvent") ? JSON.parse(localStorage.getItem("nonMrjVEvent")) : [];
 let nicVEvent = localStorage.getItem("nicVEvent") ? JSON.parse(localStorage.getItem("nicVEvent")) : [];
 
 let dayNoteEvent = localStorage.getItem("dayNoteEvent") ? JSON.parse(localStorage.getItem("dayNoteEvent")) : [];
@@ -26,11 +27,13 @@ let dayNoteEvent = localStorage.getItem("dayNoteEvent") ? JSON.parse(localStorag
 
 /* initialize lists for inputs */ 
 let alcSum = [];
-let cnbSum = [];
+let mrjSum = [];
 let cigSum = [];
 let csSum = [];
-let thcVSum = []; 
+let nonMrjVSum = []; 
 let nicVSum = [];
+let dayNote = []
+
 
 /* initialize data list */
 let data = []; 
@@ -44,14 +47,22 @@ const newEventModal = document.getElementById("newEventModal");
 const deleteEventModal = document.getElementById("deleteEventModal");
 
 const alcInput = document.getElementById("alcInput");
-const cnbInput = document.getElementById("cnbInput");
+const mrjInput = document.getElementById("mrjInput");
 const cigInput = document.getElementById("cigInput");
 const csInput = document.getElementById("csInput");
-const thcVInput = document.getElementById("thcVInput");
+const nonMrjVInput = document.getElementById("nonMrjVInput");
 const nicVInput = document.getElementById("nicVInput");
 
 const dayNoteInput = document.getElementById("dayNoteInput");
 
+/* initialize sex elements */
+
+let sex = null;
+
+const sexModal = document.getElementById("sexModal"); 
+
+const maleInput = document.getElementById("maleInput");
+const femaleInput = document.getElementById("femaleInput");
 
 
 
@@ -84,23 +95,42 @@ function validateDate(day) {
  * exports input lists to data list 
  */
 
-function exportData() { 
+function exportData() {  
 
     totalAlcSum = alcSum.reduce((a, b) => a + b, 0);
-    totalCnbSum = cnbSum.reduce((a, b) => a + b, 0);
+    totalMrjSum = mrjSum.reduce((a, b) => a + b, 0);
     totalCigSum = cigSum.reduce((a, b) => a + b, 0);
     totalCsSum = csSum.reduce((a, b) => a + b, 0);
-    totalThcVSum = thcVSum.reduce((a, b) => a + b, 0);
+    totalNonMrjVSum = nonMrjVSum.reduce((a, b) => a + b, 0);
     totalNicVSum = nicVSum.reduce((a, b) => a + b, 0);
 
     data.push([
-        "total_alc",
+        "sex",
+        sex
+    ])
+    data.push([
+        "num_drink_days",
+        alcSum.length
+    ])
+
+    data.push([
+        "total_alc_sd",
         totalAlcSum
     ])
 
     data.push([
-        "total_cnb",
-        totalCnbSum
+        "num_mrj_days",
+        mrjSum.length
+    ])
+
+    data.push([
+        "total_mrj_g",
+        totalMrjSum
+    ])
+
+    data.push([
+        "num_cig_days",
+        cigSum.length
     ])
 
     data.push([
@@ -114,16 +144,81 @@ function exportData() {
     ])
 
     data.push([
-        "total_thcV",
-        totalThcVSum
+        "num_nonMrj_days",
+        totalNonMrjVSum
     ])
 
     data.push([
         "total_nicV",
         totalNicVSum
     ])
+    
+    data.push([
+        "total_binge",
+        bingeCount
+    ])
+
+    data.push([
+        "other_sub",
+        dayNote.join("/")
+    ])
 
     downloadCsv();
+
+}
+
+/**
+ * determines the participant sex to calculate the number of binge days
+ */
+function determineSex() { 
+
+    sexModal.style.display = "block";
+
+}
+
+function saveSex() { 
+
+    if (maleInput.checked) { 
+
+        sex = "male";
+
+    }
+
+    if (femaleInput.checked) { 
+
+        sex = "female"; 
+
+    }
+
+    var size = alcSum.length;
+
+    if (sex == "male") { 
+
+        for (let i = 0; i < size; i++) { 
+
+            if (alcSum[i] >= 5) { 
+
+                bingeCount++;
+            }
+            
+        }
+
+    }
+
+    if (sex == "female") { 
+
+        for (let i = 0; i < size; i++) { 
+
+            if (alcSum[i] >= 4) { 
+
+                bingeCount++;
+            }
+            
+        }
+
+    }
+
+    exportData();
 
 }
 
@@ -161,28 +256,28 @@ function openModal(date) {
     clicked = date;
 
     csInput.checked = false;
-    thcVInput.checked = false;
+    nonMrjVInput.checked = false;
     nicVInput.checked = false; 
 
     // finding if data has already been entered on a selected date 
     const alcEventForDay = alcEvent.find(e => e.date === clicked);
-    const cnbEventForDay = cnbEvent.find(e => e.date === clicked);
+    const mrjEventForDay = mrjEvent.find(e => e.date === clicked);
     const cigEventForDay = cigEvent.find(e => e.date === clicked);
     const csEventForDay = csEvent.find(e => e.date === clicked);
-    const thcVEventForDay = thcVEvent.find(e => e.date === clicked);
+    const nonMrjVEventForDay = nonMrjVEvent.find(e => e.date === clicked);
     const nicVEventForDay = nicVEvent.find(e => e.date === clicked);
 
     const dayNoteEventForDay = dayNoteEvent.find(e => e.date === clicked);
 
     // check if data has already been entered on a selected date 
-    if (alcEventForDay || cnbEventForDay || cigEventForDay || csEventForDay || thcVEventForDay || nicVEventForDay || dayNoteEventForDay) { 
+    if (alcEventForDay || mrjEventForDay || cigEventForDay || csEventForDay || nonMrjVEventForDay || nicVEventForDay || dayNoteEventForDay) { 
 
         if (alcEventForDay) { 
             document.getElementById("alcText").innerText = alcEventForDay.val;
         }
 
-        if (cnbEventForDay) { 
-            document.getElementById("cnbText").innerText = cnbEventForDay.val; 
+        if (mrjEventForDay) { 
+            document.getElementById("mrjText").innerText = mrjEventForDay.val; 
         }
 
         if (cigEventForDay) { 
@@ -193,8 +288,8 @@ function openModal(date) {
             document.getElementById("csText").innerText = csEventForDay.val;
         }
 
-        if (thcVEventForDay) { 
-            document.getElementById("thcVText").innerText = thcVEventForDay.val;
+        if (nonMrjVEventForDay) { 
+            document.getElementById("nonMrjVText").innerText = nonMrjVEventForDay.val;
         }
 
         if (nicVEventForDay) { 
@@ -225,10 +320,10 @@ function load() {
 
     // initialize empty lists of the input data 
     alcSum = [];
-    cnbSum = [];
+    mrjSum = [];
     cigSum = [];
     csSum = [];
-    thcVSum = [];
+    nonMrjVSum = [];
     nicVSum = [];
 
 
@@ -239,8 +334,8 @@ function load() {
         alcSum.push(alcEvent[a].val);
     }
 
-    for (let b = 0; b < cnbEvent.length; b++) { 
-        cnbSum.push(cnbEvent[b].val);
+    for (let b = 0; b < mrjEvent.length; b++) { 
+        mrjSum.push(mrjEvent[b].val);
     }
 
     for (let c = 0; c < cigEvent.length; c++) { 
@@ -251,16 +346,16 @@ function load() {
         csSum.push(csEvent[d].val);
     }
 
-    for (let e = 0; e < thcVEvent.length; e++) { 
-        thcVSum.push(thcVEvent[e].val);
+    for (let e = 0; e < nonMrjVEvent.length; e++) { 
+        nonMrjVSum.push(nonMrjVEvent[e].val);
     }
 
     for (let f = 0; f < nicVEvent.length; f++) { 
         nicVSum.push(nicVEvent[f].val);
     }
 
-    for (let g = 0; g < dayNote.length; g++) { 
-        dayNote.push(dayNote[g].val);
+    for (let g = 0; g < dayNoteEvent.length; g++) { 
+        dayNote.push(dayNoteEvent[g].val);
     }
 
     // initialize the current data 
@@ -341,10 +436,10 @@ function load() {
     
             // check if data has been inputted for a given date 
             const alcEventForDay = alcEvent.find(e => e.date === dayString);
-            const cnbEventForDay = cnbEvent.find(e => e.date === dayString);
+            const mrjEventForDay = mrjEvent.find(e => e.date === dayString);
             const cigEventForDay = cigEvent.find(e => e.date === dayString);
             const csEventForDay = csEvent.find(e => e.date === dayString);
-            const thcVEventForDay = thcVEvent.find(e => e.date === dayString);
+            const nonMrjVEventForDay = nonMrjVEvent.find(e => e.date === dayString);
             const nicVEventForDay = nicVEvent.find(e => e.date === dayString);
 
 
@@ -380,7 +475,7 @@ function load() {
     
             }
     
-            if (alcEventForDay || cnbEventForDay || cigEventForDay || csEventForDay || thcVEventForDay || nicVEventForDay) { 
+            if (alcEventForDay || mrjEventForDay || cigEventForDay || csEventForDay || nonMrjVEventForDay || nicVEventForDay) { 
     
                 if (alcEventForDay) { 
     
@@ -391,12 +486,12 @@ function load() {
     
                 } 
     
-                if (cnbEventForDay) { 
+                if (mrjEventForDay) { 
     
-                    const cnbDiv = document.createElement("cnbDiv"); 
-                    cnbDiv.classList.add("cnbEvent");
-                    cnbDiv.innerText = cnbEventForDay.val;
-                    daySquare.appendChild(cnbDiv);
+                    const mrjDiv = document.createElement("mrjDiv"); 
+                    mrjDiv.classList.add("mrjEvent");
+                    mrjDiv.innerText = mrjEventForDay.val;
+                    daySquare.appendChild(mrjDiv);
     
                 } 
     
@@ -418,12 +513,12 @@ function load() {
     
                 } 
     
-                if (thcVEventForDay) { 
+                if (nonMrjVEventForDay) { 
     
-                    const thcVDiv = document.createElement("thcVDiv"); 
-                    thcVDiv.classList.add("thcVEvent");
-                    thcVDiv.innerText = "VTHC"
-                    daySquare.appendChild(thcVDiv);
+                    const nonMrjVDiv = document.createElement("nonMrjVDiv"); 
+                    nonMrjVDiv.classList.add("nonMrjVEvent");
+                    nonMrjVDiv.innerText = "VTHC"
+                    daySquare.appendChild(nonMrjVDiv);
     
                 } 
     
@@ -457,7 +552,7 @@ function load() {
 function closeModal() { 
 
     alcInput.classList.remove("error");
-    cnbInput.classList.remove("error");
+    mrjInput.classList.remove("error");
     cigInput.classList.remove("error");
 
     newEventModal.style.display = "none"; 
@@ -465,7 +560,7 @@ function closeModal() {
     backDrop.style.display = "none";
 
     alcInput.value = "";
-    cnbInput.value = "";
+    mrjInput.value = "";
     cigInput.value = "";
     csInput.value = "";
 
@@ -480,7 +575,7 @@ function closeModal() {
 
 function saveEvent() {
 
-    if (alcInput.value || cnbInput.value || cigInput.value || csInput.checked || thcVInput.checked || nicVInput.checked || dayNoteInput.value) { 
+    if (alcInput.value || mrjInput.value || cigInput.value || csInput.checked || nonMrjVInput.checked || nicVInput.checked || dayNoteInput.value) { 
 
         if (alcInput.value) { 
 
@@ -493,14 +588,14 @@ function saveEvent() {
 
         }
 
-        if (cnbInput.value) { 
+        if (mrjInput.value) { 
 
-            cnbEvent.push({
+            mrjEvent.push({
                 date: clicked,
-                val: parseFloat(cnbInput.value) 
+                val: parseFloat(mrjInput.value) 
             })
 
-            localStorage.setItem("cnbEvent", JSON.stringify(cnbEvent));
+            localStorage.setItem("mrjEvent", JSON.stringify(mrjEvent));
 
         }
 
@@ -526,14 +621,14 @@ function saveEvent() {
 
         }
 
-        if (thcVInput.checked) { 
+        if (nonMrjVInput.checked) { 
 
-            thcVEvent.push({
+            nonMrjVEvent.push({
                 date: clicked,
                 val: 1
             })
 
-            localStorage.setItem("thcVEvent", JSON.stringify(thcVEvent));
+            localStorage.setItem("nonMrjVEvent", JSON.stringify(nonMrjVEvent));
 
         }
 
@@ -574,8 +669,8 @@ function deleteEvent() {
     alcEvent = alcEvent.filter(e => e.date !== clicked);
     localStorage.setItem("alcEvent", JSON.stringify(alcEvent));
 
-    cnbEvent = cnbEvent.filter(e => e.date !== clicked);
-    localStorage.setItem("cnbEvent", JSON.stringify(cnbEvent));
+    mrjEvent = mrjEvent.filter(e => e.date !== clicked);
+    localStorage.setItem("mrjEvent", JSON.stringify(mrjEvent));
 
     cigEvent = cigEvent.filter(e => e.date !== clicked);
     localStorage.setItem("cigEvent", JSON.stringify(cigEvent));
@@ -583,8 +678,8 @@ function deleteEvent() {
     csEvent = csEvent.filter(e => e.date !== clicked);
     localStorage.setItem("csEvent", JSON.stringify(csEvent));
 
-    thcVEvent = thcVEvent.filter(e => e.date !== clicked);
-    localStorage.setItem("thcVEvent", JSON.stringify(thcVEvent));
+    nonMrjVEvent = nonMrjVEvent.filter(e => e.date !== clicked);
+    localStorage.setItem("nonMrjVEvent", JSON.stringify(nonMrjVEvent));
 
     nicVEvent = nicVEvent.filter(e => e.date !== clicked);
     localStorage.setItem("nicVEvent", JSON.stringify(nicVEvent));
@@ -625,7 +720,9 @@ function initButtons() {
 
     document.getElementById("closeButton").addEventListener("click", closeModal);
 
-    document.getElementById("downLoadButton").addEventListener("click", exportData);
+    document.getElementById("downLoadButton").addEventListener("click", determineSex);
+
+    document.getElementById("confirmButton").addEventListener("click", saveSex);
 
 }
 

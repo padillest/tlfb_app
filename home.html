@@ -46,7 +46,7 @@
 
             <input id = "alcInput" placeholder = "Alcohol Use" type = "number"/>
 
-            <input id = "cnbInput" placeholder = "Cannabis Use" type = "number"/>
+            <input id = "mrjInput" placeholder = "Marijuana Use" type = "number"/>
 
             <input id = "cigInput" placeholder = "Cigarette Use" type = "number"/>
 
@@ -55,8 +55,8 @@
                 <input id = "csInput" type = "checkbox" value = 1/> 
                 <label id = "csLabel" for = "csInput">Combined Session</label><br>
 
-                <input id = "thcVInput" type = "checkbox" value = 1/>
-                <label id = "thcVLabel" for = "thcVInput">THC Vape</label><br>
+                <input id = "nonMrjVInput" type = "checkbox" value = 1/>
+                <label id = "nonMrjVLabel" for = "nonMrjVInput">Non-Marijuana Cannabis Use</label><br>
 
                 <input id = "nicVInput" type = "checkbox" value = 1/>
                 <label id = "nicVLabel" for = "nicVInput">Nicotine Vape</label><br>
@@ -78,16 +78,36 @@
 
         </div> 
 
+        <div id = "sexModal"> 
+            <h2> Participant Sex </h2>
+
+            <div id = "sexCheckBox">
+
+                <input id = "maleInput" type = "checkbox" value = 1/>
+                <label id = "maleLabel" for = "maleInput">Male</label><br>
+                
+                <input id = "femaleInput" type = "checkbox" value = 0/>
+                <label id = "femaleLabel" for = "femaleInput">Female</label><br>
+
+                <div id = "buttonDiv"> 
+
+                    <button id="confirmButton">Confirm</button>
+
+                </div>
+
+            </div> 
+        </div>
+
         <div id = "deleteEventModal">
 
             <h2>Event</h2>
 
             <p id = "alcText"></p>
-            <p id = "cnbText"></p>
+            <p id = "mrjText"></p>
             <p id = "cigText"></p>
 
             <p id = "csText"></p>
-            <p id = "thcVText"></p>
+            <p id = "nonMrjVText"></p>
             <p id = "nicVText"></p>
             
             <p id = "dayNoteText"></p>
